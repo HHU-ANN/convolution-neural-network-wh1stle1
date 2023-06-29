@@ -84,7 +84,6 @@ class BasicBlock(nn.Module):
         return out
 
 
-
 def read_data():
     # 这里可自行修改数据预处理，batch大小也可自行调整
     # 保持本地训练的数据读取和这里一致
