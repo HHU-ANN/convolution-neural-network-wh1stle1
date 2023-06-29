@@ -15,8 +15,9 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
     
 
+# 定义ResNet模型
 class ResNet(nn.Module):
-        def __init__(self, num_classes=10):
+    def __init__(self, num_classes=10):
         super(ResNet, self).__init__()
         self.in_channels = 16
 
@@ -29,15 +30,15 @@ class ResNet(nn.Module):
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
         self.fc = nn.Linear(64, num_classes)
 
-        def _make_layer(self, channels, num_blocks, stride=1):
+    def _make_layer(self, channels, num_blocks, stride=1):
         layers = []
         layers.append(BasicBlock(self.in_channels, channels, stride))
         self.in_channels = channels
         for _ in range(num_blocks - 1):
             layers.append(BasicBlock(channels, channels))
         return nn.Sequential(*layers)
-    
-        def forward(self, x):
+
+    def forward(self, x):
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)
@@ -83,6 +84,7 @@ class BasicBlock(nn.Module):
         out += identity
         out = self.relu(out)
         return out
+
 
 def read_data():
     # 这里可自行修改数据预处理，batch大小也可自行调整
