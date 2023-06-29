@@ -49,7 +49,6 @@ class ResNet(nn.Module):
         x = self.fc(x)
         return x
 
-
 # 定义BasicBlock模块
 class BasicBlock(nn.Module):
     def __init__(self, in_channels, channels, stride=1):
