@@ -13,7 +13,7 @@ import torchvision
 import torch.nn.functional as F
 
 from torch.utils.data import DataLoader
-    
+
 
 # 定义ResNet模型
 class ResNet(nn.Module):
