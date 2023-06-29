@@ -14,7 +14,6 @@ import torch.nn.functional as F
 
 from torch.utils.data import DataLoader
 
-
 # 定义ResNet模型
 class ResNet(nn.Module):
     def __init__(self, num_classes=10):
