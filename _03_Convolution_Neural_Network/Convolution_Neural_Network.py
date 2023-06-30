@@ -14,8 +14,9 @@ from torch.utils.data import DataLoader
 
 # 3x3 卷积定义
 def conv3x3(in_channels, out_channels, stride=1):
-    return nn.Conv2d(in_channels, out_channels, kernel_size=3, 
+    return nn.Conv2d(in_channels, out_channels, kernel_size=3,
                      stride=stride, padding=1, bias=False)
+
 
 # Resnet 的残差块
 class ResidualBlock(nn.Module):
@@ -27,7 +28,7 @@ class ResidualBlock(nn.Module):
         self.conv2 = conv3x3(out_channels, out_channels)
         self.bn2 = nn.BatchNorm2d(out_channels)
         self.downsample = downsample
-        
+
     def forward(self, x):
         residual = x
         out = self.conv1(x)
@@ -42,9 +43,9 @@ class ResidualBlock(nn.Module):
         return out
 
 # ResNet定义
-class ResNet(nn.Module):
+class NeuralNetwork(nn.Module):
     def __init__(self, block, layers, num_classes=10):
-        super(ResNet, self).__init__()
+        super(NeuralNetwork, self).__init__()
         self.in_channels = 16
         self.conv = conv3x3(3, 16)
         self.bn = nn.BatchNorm2d(16)
@@ -54,7 +55,7 @@ class ResNet(nn.Module):
         self.layer3 = self.make_layer(block, 64, layers[2], 2)
         self.avg_pool = nn.AvgPool2d(8)
         self.fc = nn.Linear(64, num_classes)
-        
+
     def make_layer(self, block, out_channels, blocks, stride=1):
         downsample = None
         if (stride != 1) or (self.in_channels != out_channels):
@@ -67,7 +68,7 @@ class ResNet(nn.Module):
         for i in range(1, blocks):
             layers.append(block(out_channels, out_channels))
         return nn.Sequential(*layers)
-    
+
     def forward(self, x):
         out = self.conv(x)
         out = self.bn(out)
@@ -79,21 +80,22 @@ class ResNet(nn.Module):
         out = out.view(out.size(0), -1)
         out = self.fc(out)
         return out
-        
+
+
+
 
 def read_data():
     # 这里可自行修改数据预处理，batch大小也可自行调整
     # 保持本地训练的数据读取和这里一致
-    dataset_train = torchvision.datasets.CIFAR10(root='data/exp03', train=True, download=True, transform=torchvision.transforms.ToTensor())
-    dataset_val = torchvision.datasets.CIFAR10(root='data/exp03', train=False, download=False, transform=torchvision.transforms.ToTensor())
+    dataset_train = torchvision.datasets.CIFAR10(root='../data/exp03', train=True, download=True, transform=torchvision.transforms.ToTensor())
+    dataset_val = torchvision.datasets.CIFAR10(root='../data/exp03', train=False, download=False, transform=torchvision.transforms.ToTensor())
     data_loader_train = DataLoader(dataset=dataset_train, batch_size=256, shuffle=True)
     data_loader_val = DataLoader(dataset=dataset_val, batch_size=256, shuffle=False)
     return dataset_train, dataset_val, data_loader_train, data_loader_val
 
 def main():
-    model = ResNet(ResidualBlock, [2, 2, 2])
+    model = NeuralNetwork(ResidualBlock, [2, 2, 2]) # 若有参数则传入参数
     current_dir = os.path.dirname(os.path.abspath(__file__))
     parent_dir = os.path.dirname(current_dir)
-    model.load_state_dict(torch.load(parent_dir + '/pth/model.pth',map_location='cpu'))
+    model.load_state_dict(torch.load(parent_dir + '/pth/model.pth'))
     return model
-    
